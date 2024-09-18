@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "TradingView Alert Monitor",
+  "version": "1.0",
+  "description": "Monitor TradingView charts for alerts and call an API",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": ["https://in.tradingview.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "images/icon.png",
+    "48": "images/icon.png",
+    "128": "images/icon.png"
+  }
+}
+
