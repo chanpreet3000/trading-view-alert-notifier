@@ -3,18 +3,29 @@
   "name": "TradingView Alert Monitor",
   "version": "1.0",
   "description": "Monitor TradingView charts for alerts and call an API",
-  "permissions": ["activeTab", "scripting"],
-  "host_permissions": ["https://in.tradingview.com/*"],
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*.tradingview.com/*"
+  ],
   "background": {
     "service_worker": "background.js"
   },
-  "action": {
-    "default_popup": "popup.html"
-  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.tradingview.com/chart/*"
+      ],
+      "js": [
+        "contentScript.js"
+      ]
+    }
+  ],
   "icons": {
     "16": "images/icon.png",
     "48": "images/icon.png",
     "128": "images/icon.png"
   }
 }
-

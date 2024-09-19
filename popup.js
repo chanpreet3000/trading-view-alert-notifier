@@ -3,22 +3,21 @@ document.addEventListener('DOMContentLoaded', function() {
   const message = document.getElementById('message');
   const content = document.getElementById('content');
 
-  // Load the saved state from localStorage
-  const savedState = localStorage.getItem('alertsEnabled');
-  if (savedState !== null) {
-    toggleSwitch.checked = JSON.parse(savedState);
-  }
+  // Load the saved state from chrome.storage
+  chrome.storage.sync.get(['alertsEnabled'], function(result) {
+    toggleSwitch.checked = result.alertsEnabled || false;
 
-  chrome.runtime.sendMessage({action: "checkUrl"}, (response) => {
-    if (response.isTradingView) {
-      content.style.display = 'flex';
-      message.textContent = '';
-      // Apply the saved state
-      applyAlertState(toggleSwitch.checked);
-    } else {
-      content.style.display = 'none';
-      message.textContent = 'Please navigate to https://in.tradingview.com/ to use this extension.';
-    }
+    chrome.runtime.sendMessage({action: "checkUrl"}, (response) => {
+      if (response.isTradingView) {
+        content.style.display = 'flex';
+        message.textContent = '';
+        // Apply the saved state
+        applyAlertState(toggleSwitch.checked);
+      } else {
+        content.style.display = 'none';
+        message.textContent = 'Please navigate to https://in.tradingview.com/ to use this extension.';
+      }
+    });
   });
 
   toggleSwitch.addEventListener('change', function() {
@@ -26,13 +25,20 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   function applyAlertState(isEnabled) {
-    localStorage.setItem('alertsEnabled', JSON.stringify(isEnabled));
+    chrome.storage.sync.set({alertsEnabled: isEnabled}, function() {
+      console.log('Alerts enabled state saved:', isEnabled);
+    });
+
     if (isEnabled) {
       console.log('Alerts monitoring turned ON');
-      // Add your logic to start monitoring alerts
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {action: "toggleAlerts", enabled: true});
+      });
     } else {
       console.log('Alerts monitoring turned OFF');
-      // Add your logic to stop monitoring alerts
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {action: "toggleAlerts", enabled: false});
+      });
     }
   }
 });
