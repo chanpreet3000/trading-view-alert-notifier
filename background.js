@@ -1,31 +1,20 @@
 console.log('Background script initializing');
 
-// Set to store processed alerts
 const processedAlerts = new Set();
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log('Received message:', request);
-
   if (request.action === "alertDetected") {
-    console.log("Alert detected 333:", request.alert);
-
     const alertId = JSON.stringify(request.alert);
 
+    let response = {message: "Alert already processed"}
     if (!processedAlerts.has(alertId)) {
-      console.log("New alert detected. Processing...");
       processedAlerts.add(alertId);
-
-
-      console.log("Alert processed and stored.");
-      sendResponse({message: "New alert received and processed"});
-    } else {
-      console.log("Alert already processed. Ignoring.");
-      sendResponse({message: "Alert already processed"});
+      response = {message: "New alert received and processed"};
     }
 
     console.log("Current processed alerts:", Array.from(processedAlerts));
-
-    return true
+    sendResponse(response);
+    return true;
   }
 });
 
