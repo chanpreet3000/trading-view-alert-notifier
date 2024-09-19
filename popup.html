@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradingView Alert Monitor</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 300px;
+            padding: 8px;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        #status {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #redirect {
+            display: none;
+        }
+
+        .title{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #redirectButton{
+            padding: 8px 16px;
+            background-color: white;
+            color: #4CAF50;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 16px;
+        }
+
+
+        .text-red{
+            color: #c50505;
+        }
+
+        .text-green{
+            color: #4CAF50;
+        }
+
+        .success{
+            background-color: #58b05c;
+            color: white;
+        }
+
+    </style>
+</head>
+<body class="success">
+<div class="title">
+    <img src="./images/icon.png" alt="TradingView Alert Monitor" width="40">
+    <h2>TradingView Alert Monitor</h2>
+</div>
+<div>
+    <div id="status"></div>
+    <div id="redirect">
+        <p>Please go to a TradingView chart to use this extension.</p>
+        <button id="redirectButton">Go to TradingView</button>
+    </div>
+</div>
+<script src="popup.js"></script>
+</body>
+</html>
