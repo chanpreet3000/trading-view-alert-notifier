@@ -6,15 +6,29 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "alertDetected") {
     const alertId = JSON.stringify(request.alert);
 
-    let response = {message: "Alert already processed"}
     if (!processedAlerts.has(alertId)) {
-      processedAlerts.add(alertId);
-      response = {message: "New alert received and processed"};
+      const urlEncodedAlert = new URLSearchParams(request.alert).toString();
+
+      fetch('https://algorun.in/member/tradingview.php?' + urlEncodedAlert, {
+        mode: 'no-cors',
+      })
+        .then((response) => {
+          processedAlerts.add(alertId);
+          const message = {message: "New alert received, processed, and sent to algorun API"};
+          console.log('Response from algorun API:', response);
+          sendResponse(message);
+        })
+        .catch((err) => {
+          console.error(err);
+          const message = {message: "New alert received, processed but failed to send to algorun API"};
+          sendResponse(message);
+        });
+      return true;
+    } else {
+      sendResponse({message: "Alert already processed"});
     }
 
     console.log("Current processed alerts:", Array.from(processedAlerts));
-    sendResponse(response);
-    return true;
   }
 });
 

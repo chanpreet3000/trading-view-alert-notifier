@@ -20,13 +20,16 @@ async function extractAlertInfo(toastListNode) {
   for (const item of alertItems) {
     const contentContainer = item.querySelector('[class^="contentContainer-"]');
     if (contentContainer) {
-      const title = contentContainer.querySelector('[class^="title-"]')?.innerText.trim() || '';
+      let title = contentContainer.querySelector('[class^="title-"]')?.innerText.trim() || '';
+      title = title.replace(/\s+/g, ' ').trim();
+
       const description = contentContainer.querySelector('[class^="description-"]')?.innerText.trim() || '';
       const time = contentContainer.querySelector('[class^="time-"]')?.innerText.trim() || '';
 
       const alertInfo = {title, description, time};
 
       if (title && description && time && /Alert on/.test(title)) {
+        console.log('Alert detected:', alertInfo);
         await processAlert(alertInfo);
       }
     }
