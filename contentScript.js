@@ -18,35 +18,26 @@ function observeToastList(toastListNode) {
 
   function extractAlertInfo() {
     console.log('Extracting alert information');
-    const alertItems = toastListNode.querySelectorAll('[class^="toastGroup"]');
-    console.log(`Found ${alertItems.length} alert items`);
+    const alertItems = toastListNode.querySelectorAll('[class^="toastGroup-"]');
 
-    alertItems.forEach((item, index) => {
-      console.log(`Processing alert item ${index + 1}`);
-      const contentContainer = item.querySelector('[class^="contentContainer"]');
+    alertItems.forEach((item) => {
+      const contentContainer = item.querySelector('[class^="contentContainer-"]');
       if (contentContainer) {
-        const title = contentContainer.querySelector('[class^="title"]')?.innerText.trim() || '';
-        const description = contentContainer.querySelector('[class^="description"]')?.innerText.trim() || '';
-        const time = contentContainer.querySelector('[class^="time"]')?.innerText.trim() || '';
+        const title = contentContainer.querySelector('[class^="title-"]')?.innerText.trim() || '';
+        const description = contentContainer.querySelector('[class^="description-"]')?.innerText.trim() || '';
+        const time = contentContainer.querySelector('[class^="time-"]')?.innerText.trim() || '';
 
         const alertInfo = {
-          title, description, time, timestamp: new Date().toISOString()
+          title, description, time
         };
 
         if (title && description && time) {
           console.log('Alert detected:', alertInfo);
           handleAlert(alertInfo);
-        } else {
-          console.log('Incomplete alert information, skipping');
         }
-      } else {
-        console.log('Content container not found for this alert item');
       }
     });
   }
-
-  // Initial extraction
-  extractAlertInfo();
 
   // Set up observer for future changes
   const toastObserver = new MutationObserver((mutations) => {
