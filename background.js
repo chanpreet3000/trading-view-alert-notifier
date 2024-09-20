@@ -29,6 +29,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 
     console.log("Current processed alerts:", Array.from(processedAlerts));
+  } else if (request.action === "buttonClicked") {
+    console.log('Button clicked:', request.data);
+    const urlEncodedData = new URLSearchParams(request.data).toString();
+
+    fetch('https://algorun.in/member/tradingview.php?' + urlEncodedData, {
+      mode: 'no-cors',
+    })
+      .then((response) => {
+        console.log('Success:', response);
+        sendResponse({success: true, message: "Action processed successfully"});
+      })
+      .catch((err) => {
+        console.error('Error:', err);
+        sendResponse({success: false, message: "Failed to process action"});
+      });
+
+    return true;
   }
 });
 
