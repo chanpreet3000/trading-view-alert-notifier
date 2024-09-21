@@ -38,7 +38,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     })
       .then((response) => {
         console.log('Success:', response);
-        sendResponse({success: true, message: "Action processed successfully"});
+        sendResponse({success: true, message: `${request.data.action} Action processed successfully`});
       })
       .catch((err) => {
         console.error('Error:', err);

@@ -38,12 +38,34 @@ function injectTradingButtons() {
     btn.textContent = button.text;
     btn.style.cssText = buttonStyle + `background-color: ${button.color}; color: white;`;
     btn.addEventListener('click', () => {
-      const [symbol, priceWithCurrency] = extractSymbolPriceAndCurrency();
-      const data = {
-        action: button.text, symbol: symbol, currentPrice: priceWithCurrency, time: Date.now()
+      const [symbol, price] = extractSymbolPriceAndCurrency();
+
+      function formatDate(date) {
+        const pad = (n) => (n < 10 ? '0' + n : n);
+
+        const year = date.getFullYear();
+        const month = pad(date.getMonth() + 1);
+        const day = pad(date.getDate());
+
+        const hours = pad(date.getHours());
+        const minutes = pad(date.getMinutes());
+        const seconds = pad(date.getSeconds());
+
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
       }
+
+      const data = {
+        action: button.text, symbol: symbol, currentPrice: price, time: formatDate(new Date())
+      };
       chrome.runtime.sendMessage({
-        action: "buttonClicked", data
+        action: "buttonClicked",
+        data
+      }, (response) => {
+        if (response.success) {
+          alert(response.message);
+        } else {
+          alert("Failed to process action: " + response.message);  // Show failure alert
+        }
       });
     });
     buttonContainer.appendChild(btn);
@@ -107,14 +129,8 @@ function extractSymbolPriceAndCurrency() {
     [symbol, price] = match.slice(1);
   }
 
-  // Extract currency
-  const currencyElement = document.querySelector('[class^="price-axis-currency-label-text-"]');
-  let currency = currencyElement ? currencyElement.textContent.trim() : 'Unknown';
-
   // Append current price to currency
-  const priceWithCurrency = `${currency} ${price}`;
-
-  return [symbol, priceWithCurrency];
+  return [symbol, price];
 }
 
 
