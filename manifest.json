@@ -5,7 +5,8 @@
   "description": "Monitor TradingView charts for alerts and call an API",
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "storage"
   ],
   "host_permissions": [
     "https://*.tradingview.com/*"
